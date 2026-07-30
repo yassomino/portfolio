@@ -1,0 +1,362 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --bg: #06070c;
+  --bg-raised: #0b0d16;
+  --surface: #0e1120;
+  --edge: rgba(148, 163, 255, 0.14);
+  --edge-hot: rgba(148, 163, 255, 0.32);
+
+  --accent: #6366f1;
+  --violet: #a855f7;
+  --cyan: #22d3ee;
+
+  --text: #e8eaf6;
+  --text-dim: #9ba3c7;
+  --text-faint: #6f78a0;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--bg);
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-outfit), sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Fixed atmosphere: scanlines + vignette, never intercepts input */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      0deg,
+      rgba(148, 163, 255, 0.035) 0px,
+      rgba(148, 163, 255, 0.035) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      transparent 45%,
+      rgba(3, 4, 8, 0.55) 100%
+    );
+  }
+
+  ::selection {
+    background: rgba(99, 102, 241, 0.35);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent), var(--violet));
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+  }
+}
+
+/* ─── Components ─────────────────────────────────────────────────────── */
+/* In the components layer so Tailwind utilities always win over these. */
+@layer components {
+  /* Panel with a machined, notched corner */
+  .panel {
+    background: linear-gradient(
+      160deg,
+      rgba(148, 163, 255, 0.055),
+      rgba(148, 163, 255, 0.015)
+    );
+    border: 1px solid var(--edge);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .panel:hover {
+    border-color: var(--edge-hot);
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.12), 0 18px 60px -28px rgba(99, 102, 241, 0.65);
+  }
+
+  /* HUD corner brackets */
+  .hud {
+    position: relative;
+  }
+  .hud::before,
+  .hud::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--accent);
+    opacity: 0.65;
+    pointer-events: none;
+  }
+  .hud::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+  .hud::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+  }
+
+  /* Monospace system label */
+  .meta {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  /* Headline treatments */
+  .grad-text {
+    background: linear-gradient(135deg, #ffffff 0%, #b6bde0 55%, #7e88b8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .grad-accent {
+    background: linear-gradient(110deg, var(--accent) 0%, var(--violet) 45%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Perspective grid floor */
+  .grid-floor {
+    background-image: linear-gradient(rgba(99, 102, 241, 0.22) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99, 102, 241, 0.22) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(420px) rotateX(74deg);
+    transform-origin: center bottom;
+    mask-image: linear-gradient(to top, #000 0%, transparent 78%);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 78%);
+  }
+
+  /* Faint dot field */
+  .dot-field {
+    background-image: radial-gradient(rgba(148, 163, 255, 0.16) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  /* Terminal caret */
+  .caret {
+    display: inline-block;
+    width: 9px;
+    height: 1.05em;
+    background: var(--cyan);
+    margin-left: 3px;
+    vertical-align: text-bottom;
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.9);
+  }
+
+  /* Data pill */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.75rem;
+    font-family: var(--font-mono), monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px solid var(--edge);
+    background: rgba(148, 163, 255, 0.05);
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .pill:hover {
+    color: #fff;
+    border-color: rgba(34, 211, 238, 0.5);
+    background: rgba(34, 211, 238, 0.08);
+  }
+
+  /* Angular button */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.6rem;
+    font-family: var(--font-mono), monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: all 0.22s ease;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--cyan);
+    color: #04121a;
+    box-shadow: 0 0 34px rgba(34, 211, 238, 0.45);
+  }
+  .btn-ghost {
+    border: 1px solid var(--edge);
+    color: var(--text-dim);
+  }
+  .btn-ghost:hover {
+    border-color: rgba(34, 211, 238, 0.5);
+    color: #fff;
+    box-shadow: 0 0 26px rgba(34, 211, 238, 0.18);
+  }
+
+  /* Section index label */
+  .index-tag {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cyan);
+  }
+
+  /* ── Click feedback ────────────────────────────────────────────────
+     Rings expand from the pointer. Interactive targets get a hotter ring,
+     a delayed echo, and a centre dot. */
+  .fx-ring {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border: 1px solid rgba(148, 163, 255, 0.55);
+    border-radius: 9999px;
+    opacity: 0;
+    animation: fxRing 620ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .fx-ring-hot {
+    border-color: rgba(34, 211, 238, 0.85);
+    box-shadow: 0 0 18px rgba(34, 211, 238, 0.55);
+  }
+  .fx-ring-echo {
+    border-color: rgba(168, 85, 247, 0.5);
+  }
+  .fx-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    border-radius: 9999px;
+    background: #22d3ee;
+    box-shadow: 0 0 14px rgba(34, 211, 238, 0.9);
+    animation: fxDot 420ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* Press feedback on every control */
+  .btn,
+  .pill {
+    position: relative;
+    transition: all 0.22s ease, transform 0.11s ease;
+  }
+  .btn:active,
+  .pill:active {
+    transform: translateY(1px) scale(0.97);
+  }
+  .field {
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.11s ease;
+  }
+  .field:active {
+    transform: scale(0.995);
+  }
+
+  /* Form field */
+  .field {
+    width: 100%;
+    background: rgba(148, 163, 255, 0.04);
+    border: 1px solid var(--edge);
+    padding: 0.75rem 1rem;
+    font-family: var(--font-outfit), sans-serif;
+    font-size: 0.9375rem;
+    color: var(--text);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .field::placeholder {
+    color: var(--text-faint);
+  }
+  .field:focus {
+    outline: none;
+    border-color: rgba(34, 211, 238, 0.55);
+    background: rgba(34, 211, 238, 0.05);
+  }
+}
+
+/* ─── Click feedback keyframes ───────────────────────────────────────── */
+@keyframes fxRing {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(9);
+  }
+}
+
+@keyframes fxDot {
+  0% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+/* ─── Motion preferences ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

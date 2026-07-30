@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" fill="#06070c"/>
+  <path d="M0 0h14L0 14z" fill="#22d3ee" opacity="0.9"/>
+  <path d="M64 64H50l14-14z" fill="#a855f7" opacity="0.9"/>
+  <text x="32" y="43" font-family="Verdana, Geneva, sans-serif" font-size="30" font-weight="bold"
+        fill="#ece4d6" text-anchor="middle" letter-spacing="-1">YK</text>
+</svg>

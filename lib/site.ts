@@ -18,7 +18,17 @@ function firstUrl(...candidates: (string | undefined)[]) {
   return 'http://localhost:3000'
 }
 
-export const siteUrl = firstUrl(process.env.NEXT_PUBLIC_SITE_URL, process.env.VERCEL_URL)
+/* Order matters:
+   1. An explicit URL, once a custom domain exists.
+   2. Vercel's stable production domain, set automatically on every deploy.
+   3. The per deployment URL, which changes on every push, so it is a last
+      resort and never what search engines should index.
+   4. Localhost for dev. */
+export const siteUrl = firstUrl(
+  process.env.NEXT_PUBLIC_SITE_URL,
+  process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  process.env.VERCEL_URL
+)
 
 export const siteName = 'Yassin Koubeisy'
 export const siteTitle = 'Yassin Koubeisy | Software Developer'

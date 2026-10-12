@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowLeft, ArrowRight, Terminal } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ExternalLink, Github, Terminal } from 'lucide-react'
 import Link from 'next/link'
 import ClickFX from '@/components/ClickFX'
 import type { Project } from '@/lib/projects'
@@ -85,6 +85,33 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
           <p className="mt-5 max-w-measure font-body text-lg md:text-xl leading-relaxed text-[color:var(--text-dim)]">
             {project.tagline}
           </p>
+
+          {(project.liveUrl || project.githubUrl) && (
+            <div className="mt-7 flex flex-wrap gap-3">
+              {project.liveUrl && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-primary"
+                >
+                  View live
+                  <ExternalLink size={13} />
+                </a>
+              )}
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-ghost"
+                >
+                  <Github size={13} />
+                  GitHub
+                </a>
+              )}
+            </div>
+          )}
 
           {/* Boot log */}
           <div className="mt-9 max-w-md panel hud overflow-hidden">

@@ -23,9 +23,48 @@ export interface Project {
   architecture: string
   impact: string
   facts: ProjectFact[]
+  liveUrl?: string
+  githubUrl?: string
 }
 
 export const projects: Project[] = [
+  {
+    slug: 'playerworth',
+    title: 'PlayerWorth',
+    tagline:
+      'A deployed ML product that estimates Premier League player market values and makes the model explorable instead of hiding it behind a prediction.',
+    description:
+      'An end-to-end football analytics platform I built from data pipeline to production deployment. PlayerWorth processes historical Premier League player-seasons, serves a frozen XGBoost valuation model through FastAPI, persists application data in PostgreSQL, and gives users player search, valuation history, rankings, model evidence, and an interactive transfer simulator in a Next.js frontend.',
+    stack: ['Next.js', 'FastAPI', 'XGBoost', 'PostgreSQL', 'TypeScript', 'Supabase', 'Railway', 'Vercel'],
+    category: 'ML / Full-stack',
+    year: '2026',
+    ink: '#2dd4bf',
+    gradientFrom: '#1e1b4b',
+    gradientTo: '#07111f',
+    terminalLines: [
+      '$ load playerworth_v1',
+      '✓ 2,594 player-seasons',
+      '✓ temporal backtest complete',
+      '✓ api + database healthy',
+      '→ production model live',
+    ],
+    problem:
+      'Football market value is noisy, non-linear, and easy to model badly. A random train/test split can leak future information, a strong notebook score says nothing about whether the system can serve real users, and a single prediction is not very useful if nobody can inspect what produced it. I wanted to build the harder version of the project: a valuation model with time-aware evaluation, a real backend and database, an interface for exploring predictions, and an actual production deployment.',
+    solution:
+      'Built PlayerWorth as a full-stack ML product. I created the historical data pipeline, matched season performance to market-value targets within a controlled post-season window, compared Linear Regression, Ridge, Random Forest and XGBoost variants, and selected an XGBoost model using age, minutes, goals, assists and position. I then froze the V1 artifact and built player search, profiles, valuation history, over/undervalued rankings, a Model Lab, and a simulator that lets users change model inputs without altering stored player data.',
+    architecture:
+      'The browser runs a Next.js and TypeScript frontend on Vercel. It calls a FastAPI service deployed on Railway, which owns all database access and model inference. PostgreSQL runs on Supabase behind SQLAlchemy and Alembic migrations. The production API loads the frozen playerworth_v1 artifact once at startup and serves predictions alongside player and market-value data. Model selection used expanding-window temporal backtesting across seasons rather than a random split, and the final artifact was fit on all 2,594 player-season rows after evaluation.',
+    impact:
+      'PlayerWorth is live as a complete production application, not just an experiment. The selected model produced 2,103 pooled out-of-fold temporal predictions with MAE of €9.68M, RMSE of €15.05M and R² of 0.525. The release is covered by 218 Python tests, 60 Vitest tests and 37 Playwright end-to-end tests, with linting, type checking, accessibility checks, database migration validation and repeatable seeding. More importantly, the project forced me to connect ML methodology with software engineering, deployment, observability, and the limitations of the model itself.',
+    facts: [
+      { label: 'Dataset', value: '2,594 player-seasons' },
+      { label: 'Temporal MAE', value: '€9.68M' },
+      { label: 'Temporal R²', value: '0.525' },
+      { label: 'Deployment', value: 'Vercel → Railway → Supabase' },
+    ],
+    liveUrl: 'https://playerworth.vercel.app',
+    githubUrl: 'https://github.com/yassomino/PlayerWorth',
+  },
   {
     slug: 'stratum-wealth',
     title: 'Stratum Wealth',
